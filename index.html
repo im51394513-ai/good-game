@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>數字大盜！寶藏爭奪戰</title>
+<style>
+:root{--bg:#e6f3f0;--ink:#12324a;--card:#fff;--line:#b9d8d2;--gold:#f5b82e;--goldink:#4a3300;--sea:#1d6f8a;--ok:#1f9d6b;--mute:#5a7586;--seaink:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c2230;--ink:#e8f3f5;--card:#14394d;--line:#2a5a70;--mute:#9fc0cc;--sea:#5fc0de;--seaink:#06202c}}
+:root[data-theme="dark"]{--bg:#0c2230;--ink:#e8f3f5;--card:#14394d;--line:#2a5a70;--mute:#9fc0cc;--sea:#5fc0de;--seaink:#06202c}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.6}
+main{max-width:520px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.7rem;margin:8px 0 4px;letter-spacing:.04em}
+.sub{color:var(--mute);margin:0 0 24px}
+button{font:inherit;cursor:pointer;border:0;color:inherit}
+button:focus-visible{outline:3px solid var(--sea);outline-offset:2px}
+.level{display:block;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
+.level b{font-size:1.4rem;display:block}
+.level span{color:var(--mute)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.back{background:none;color:var(--sea);padding:6px 0;font-weight:700}
+.tag{background:var(--gold);color:var(--goldink);border-radius:99px;padding:2px 14px;font-weight:700}
+.seg{display:flex;background:var(--line);border-radius:14px;padding:4px;gap:4px;margin-bottom:10px}
+.seg button{flex:1;border-radius:11px;padding:9px 4px;font-weight:700;background:transparent}
+.seg button.on{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.seg.small button{padding:6px 4px}
+.q{background:var(--card);border:2px dashed var(--gold);border-radius:22px;padding:18px 16px;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;margin-bottom:14px}
+.q.empty{color:var(--mute);font-size:1.1rem}
+.badge{background:var(--gold);color:var(--goldink);border-radius:99px;padding:1px 14px;font-weight:700;margin-bottom:8px}
+.task{margin:0 0 8px}
+.lab{color:var(--mute);font-size:.9rem}
+.big{font-size:2.6rem;font-weight:800;line-height:1.2}
+.note{margin:10px 0 0;font-size:.9rem;color:var(--mute)}
+.main-btn{display:block;width:100%;border-radius:16px;padding:15px;font-size:1.2rem;font-weight:700;margin-bottom:12px}
+.draw{background:var(--gold);color:var(--goldink)}
+.reveal{background:var(--sea);color:var(--seaink)}
+.main-btn[disabled]{opacity:.4;cursor:not-allowed}
+.cards-title{font-weight:700;margin:18px 0 8px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.fc{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 2px 8px;text-align:center}
+.fc big{display:block;font-size:2rem;font-weight:800;line-height:1.1}
+.fc small{color:var(--mute);font-size:.8rem}
+.fc.on{border-color:var(--gold);background:var(--gold);color:var(--goldink)}
+.fc.on small{color:var(--goldink)}
+.result{background:var(--card);border-left:8px solid var(--ok);border-radius:14px;padding:14px 16px;margin-top:6px}
+.result .ans{font-size:1.4rem;font-weight:800}
+.result .pts{font-size:1.1rem;font-weight:700;color:var(--ok)}
+.mask{position:fixed;inset:0;background:rgba(5,20,30,.6);display:flex;align-items:flex-end;justify-content:center;z-index:5}
+.sheet{background:var(--card);width:100%;max-width:520px;border-radius:24px 24px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px))}
+.sheet h2{margin:0 0 8px;font-size:1.4rem}
+.sheet p{margin:4px 0 10px}
+.sheet b{color:var(--sea)}
+.row{display:flex;gap:10px;margin-top:14px}
+.row button{flex:1;border-radius:14px;padding:13px;font-weight:700;font-size:1.05rem}
+.yes{background:var(--gold);color:var(--goldink)}
+.no{background:var(--line);color:var(--ink)}
+.rb{background:var(--card);border:2px solid var(--gold);border-radius:99px;padding:2px 14px;font-weight:700;font-size:.95rem}
+.rb.big{display:block;width:100%;border-radius:16px;padding:12px;font-size:1.1rem;margin-top:6px}
+#rsheet{max-height:92vh;overflow-y:auto}
+.rh{display:flex;justify-content:space-between;align-items:center;color:var(--mute);font-weight:700}
+.rx{background:var(--line);border-radius:50%;width:36px;height:36px;font-size:1rem}
+.vis{background:var(--bg);border-radius:16px;padding:14px 8px;margin:12px 0 10px;min-height:190px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px}
+.vr{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+.vr .lb{font-weight:700;min-width:3.2em;text-align:right;margin-right:4px}
+.pc{width:38px;height:54px;border-radius:8px;border:2px solid var(--sea);background:var(--card);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:1.2rem}
+.pc.n{background:var(--gold);border-color:#c98f00;color:var(--goldink)}
+.pc.d{border-style:dashed;color:var(--mute);border-color:var(--mute);background:transparent}
+.op{font-size:1.4rem;font-weight:800}
+.ph{background:var(--card);border:3px solid var(--ink);border-radius:20px;padding:12px 26px;text-align:center}
+.ph .bg{font-size:2.6rem;font-weight:800;line-height:1.2}
+.tile{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:8px 2px;width:74px;text-align:center}
+.tile b{display:block;font-size:1.6rem;line-height:1.1}
+.tile small{color:var(--mute);font-size:.75rem}
+.vb{border-radius:14px;padding:12px 18px;text-align:center;background:var(--card);border:2px solid var(--line)}
+.vb b{display:block;font-size:2rem;line-height:1.2;color:var(--sea)}
+.bub{border-radius:14px;padding:8px 14px;font-weight:700;background:var(--card);border:2px solid var(--line)}
+.bub.x{border-color:#d9534f}.bub.v{border-color:var(--ok)}
+.dots{display:flex;justify-content:center;gap:6px;margin:10px 0 0}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--gold)}
+.row button[disabled]{opacity:.4}
+#rmask{align-items:flex-start;overflow-y:auto;background:var(--bg);z-index:9}
+#rsheet{max-height:none;overflow:visible;border-radius:0;background:transparent;padding:0 14px calc(28px + env(safe-area-inset-bottom,0px))}
+.rtop{position:sticky;top:0;z-index:2;margin:0 -14px;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 12px;background:linear-gradient(135deg,#12324a,#1d6f8a);color:#fff;display:flex;justify-content:space-between;align-items:center;border-radius:0 0 22px 22px}
+.rtop h2{margin:0;font-size:1.3rem;color:#fff}
+.rtop small{color:#f5b82e;display:block;font-weight:700}
+.rtop .rx{background:rgba(255,255,255,.22);color:#fff}
+.bob{display:inline-block;animation:bob 2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-5px) rotate(6deg)}}
+@media (prefers-reduced-motion:reduce){.bob{animation:none}}
+.sec{background:var(--card);border:3px solid var(--c);border-radius:22px;padding:12px 14px 14px;margin:14px 0}
+.sec h3{margin:0 0 8px;font-size:1.25rem;display:flex;align-items:center;gap:8px}
+.em{width:40px;height:40px;border-radius:50%;background:var(--c);display:inline-flex;align-items:center;justify-content:center;font-size:1.4rem;flex:none}
+.sec p{margin:8px 0 0}
+.vr.t4{flex-wrap:nowrap;gap:6px}
+.vr.t4 .tile{width:auto;flex:1;min-width:0}
+.tg{border-radius:99px;padding:1px 12px;font-weight:700;color:#fff;background:var(--c)}
+
+:root{--g1:#9edcf0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--g1:#17556f}}
+:root[data-theme="dark"]{--g1:#17556f}
+body{background:linear-gradient(180deg,var(--g1) 0,var(--bg) 360px) no-repeat var(--bg)}
+.hero{text-align:center;padding:6px 0 20px}
+.hero .logo{font-size:3.2rem;line-height:1.2}
+.hero h1{font-size:1.8rem;margin:2px 0 8px;text-shadow:0 2px 0 rgba(245,184,46,.55)}
+.hero .pill{display:inline-block;background:var(--card);border:2px solid var(--gold);border-radius:99px;padding:2px 16px;font-weight:700}
+.level{position:relative;border:0;border-radius:22px;padding:18px 90px 22px 20px;color:#fff;box-shadow:0 6px 0 rgba(0,0,0,.22);margin-bottom:18px}
+.level[data-lv="easy"]{background:linear-gradient(135deg,#17a57a,#0e7556)}
+.level[data-lv="hard"]{background:linear-gradient(135deg,#e2601f,#bf3558)}
+.level b{font-size:1.7rem}
+.level span{color:rgba(255,255,255,.95)}
+.level .lvic{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:3rem;font-style:normal}
+.level:active,.main-btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.22)}
+.main-btn{border-radius:18px;box-shadow:0 5px 0 rgba(0,0,0,.2)}
+.draw{background:linear-gradient(#ffd966,#f5b82e)}
+.reveal{background:linear-gradient(#3aa0c0,#1d6f8a)}
+.seg button.on{background:var(--gold);color:var(--goldink);box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.q{position:relative;border:3px solid var(--gold);border-radius:24px;box-shadow:0 6px 0 rgba(201,143,0,.55)}
+.q::before{content:"✨";position:absolute;top:8px;left:12px}
+.q::after{content:"✨";position:absolute;bottom:8px;right:12px}
+.q:not(.empty){animation:pop .4s}
+.q .big{color:var(--sea)}
+@keyframes pop{0%{transform:scale(.85);opacity:0}70%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.q:not(.empty),.result{animation:none}}
+.fc{position:relative;border:2px solid var(--c,var(--line));border-radius:14px;padding:8px 2px;box-shadow:0 4px 0 rgba(0,0,0,.14)}
+.fc[data-k="A"]{--c:#e8506e}.fc[data-k="J"]{--c:#2f7de1}.fc[data-k="Q"]{--c:#8e5bd6}.fc[data-k="K"]{--c:#d98a00}
+.fc .ic{display:block;font-size:1.5rem;font-style:normal;line-height:1.3}
+.fc big{color:var(--c)}
+.fc.on big{color:var(--goldink)}
+.fc.on{border-color:#c98f00}
+.result{border:3px solid var(--ok);border-left-width:3px;border-radius:18px;animation:pop .4s}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<section id="s1">
+  <div class="hero"><div class="logo"><span class="bob">🏴‍☠️</span> <span class="bob" style="animation-delay:.4s">💎</span> <span class="bob" style="animation-delay:.8s">🗺️</span></div><h1>數字大盜！寶藏爭奪戰</h1><span class="pill">出題小幫手　先選擇難度</span></div>
+  <button class="level" data-lv="easy"><i class="lvic">🌱</i><b>簡單</b><span>使用撲克牌 2～5</span></button>
+  <button class="level" data-lv="hard"><i class="lvic">🔥</i><b>困難</b><span>使用撲克牌 2～10</span></button>
+  <button class="rb big" data-rule>📖 遊戲規則（一頁看懂）</button>
+</section>
+
+<section id="s2" class="hide">
+  <div class="top"><button class="back" id="back">‹ 重選難度</button><span><span class="tag" id="lvtag"></span> <button class="rb" data-rule>📖 規則</button></span></div>
+  <div class="seg" id="modeSeg"><button data-m="solo" class="on">個人版</button><button data-m="coop">合作版</button></div>
+  <div class="seg small hide" id="npSeg"><button data-n="2">2 人</button><button data-n="3" class="on">3 人</button><button data-n="4">4 人</button></div>
+  <div class="q empty" id="q"></div>
+  <button class="main-btn draw" id="draw">💎 抽寶藏卡</button>
+  <button class="main-btn reveal" id="show" disabled>🔓 公布答案</button>
+  <div class="result hide" id="res"></div>
+  <div class="cards-title">功能牌（點一下看說明）</div>
+  <div class="cards" id="cards"></div>
+</section>
+</main>
+<div class="mask hide" id="mask"><div class="sheet" id="sheet"></div></div>
+<div class="mask hide" id="rmask"><div class="sheet" id="rsheet"></div></div>
+
+<script>
+var FC={
+ solo:{who:"誰拿寶藏？",
+  A:{n:"偷牌加倍",d:"先拿左邊玩家 1 張手牌，再出 2 張牌相加。",w:"最接近寶藏數字的人拿雙倍分數！"},
+  J:{n:"大盜陷阱",d:"大家蓋著出一張牌，時間到一起翻開。",w:"數字最大的人踩陷阱沒收，由第二大的人拿走寶藏！"},
+  Q:{n:"調虎離山",d:"覺得牌不好？把手牌全換掉重新抽 3 張。",w:"這局不搶寶藏，但可以直接加 1 分！"},
+  K:{n:"寶藏爭奪戰",d:"出 2 張牌相加，比誰速度快。",w:"算出來剛好等於寶藏數字的人拿到寶藏！"}},
+ coop:{who:"怎樣算成功？",
+  A:{n:"神偷支援",d:"出牌前，隊伍可以選兩個人互相交換 1 張手牌。",w:"大家出牌相加，剛好等於寶藏數字即可！"},
+  J:{n:"避開雷達",d:"全員各出一張牌，把所有出的牌全部加起來。",w:"總和不可以超過寶藏數字，否則算觸發警報失敗！"},
+  Q:{n:"道具箱",d:"隊伍自由選擇要全體換新牌，還是直接加 2 分。",w:"不用出牌，直接領取效果！"},
+  K:{n:"金庫大決戰",d:"全隊合力剛好打出 3 張牌進行相加。",w:"3 張牌相加必須精準等於寶藏數字才算成功！"}}
+};
+var level="easy",mode="solo",np=3,cur=null,card=null,pend=null;
+function $(i){return document.getElementById(i)}
+function r(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function pick(a){return a[r(0,a.length-1)]}
+function hi(){return level==="easy"?5:10}
+function tgt(t){
+ if(Math.random()<.5)return{lab:"寶藏數字",txt:String(t)};
+ var a=[],h=hi(),i,x,d;
+ if(t>=3){x=r(1,t-1);a.push(x+" + "+(t-x))}
+ x=r(2,9);a.push((t+x)+" − "+x);
+ for(i=2;i<=h;i++)if(t%i===0&&t/i>=2&&t/i<=h)a.push(i+" × "+(t/i));
+ d=r(2,h>5?9:5);a.push((t*d)+" ÷ "+d);
+ return{lab:"寶藏密碼（先算出寶藏數字）",txt:pick(a)};
+}
+function build(){
+ var lo=2,h=hi(),k=card,t,g,o={task:"",lab:"",big:"",ans:"",rule:"",note:""};
+ function T(v,pre){t=v;g=tgt(v);o.lab=g.lab;o.big=(pre||"")+g.txt;o.ans="寶藏數字 = "+v}
+ if(mode==="solo"){
+  if(k==="J"){o.task="大家蓋著出 1 張牌，時間到一起翻開。";o.lab="本局玩法";o.big="比大小";o.ans="本局不用算寶藏數字";o.rule="數字最大的人踩到陷阱，寶藏被沒收；第二大的人拿走寶藏，得 1 分。"}
+  else if(k==="Q"){o.task="覺得牌不好？把手牌全換掉，重新抽 3 張。";o.lab="本局玩法";o.big="換牌";o.ans="本局不搶寶藏";o.rule="直接加 1 分。"}
+  else{
+   T(r(2*lo,2*h));
+   if(k==="A"){o.task="先拿左邊玩家 1 張手牌，再出 2 張牌相加。";o.rule="最接近 "+t+" 的人拿雙倍分數，得 2 分。"}
+   else if(k==="K"){o.task="出 2 張牌相加，比誰速度快！";o.rule="算出來剛好等於 "+t+" 的人拿到寶藏，得 1 分。若沒人剛好等於，這局沒人得分。"}
+   else{o.task="出 2 張牌相加。";o.rule="最接近 "+t+" 的人拿分，得 1 分。"}
+  }
+ }else{
+  o.note="溝通暗號：不能直接說出數字（例如不能說「我有 5」），只能說策略（例如「我這局出的數字很大」）。";
+  var n=np;
+  if(k==="Q"){o.task="不用出牌！隊伍自由選擇：全體換新牌，或直接加 2 分。";o.lab="本局玩法";o.big="道具箱";o.ans="本局不用算寶藏數字";o.rule="領取效果就完成。"}
+  else if(k==="J"){
+   var av=n*(lo+h)/2;T(Math.min(n*h,r(Math.floor(av),Math.ceil(av)+2)),"不可超過 ");
+   o.task="全員各出 1 張牌，把所有出的牌全部加起來。";o.rule="總和不可以超過 "+t+"，否則觸發警報，失敗。成功得 1 分。"}
+  else if(k==="K"){T(r(3*lo,3*h));o.task="全隊合力剛好打出 3 張牌相加。";o.rule="3 張牌相加必須剛好等於 "+t+" 才成功，成功得 1 分。"}
+  else{T(r(n*lo,n*h));
+   o.task=(k==="A"?"出牌前，選兩個人互相交換 1 張手牌。然後":"")+"每人出 1 張牌，全部相加。";
+   o.rule="全員出牌相加剛好等於 "+t+" 才成功，成功得 1 分。"}
+ }
+ return o;
+}
+function render(){
+ var q=$("q");
+ if(!cur){q.className="q empty";q.innerHTML="<div style='font-size:3rem'>🗺️</div>按下「抽寶藏卡」，尋找寶藏！";return}
+ q.className="q";
+ q.innerHTML=(card?'<span class="badge">'+card+'　'+FC[mode][card].n+'</span>':"")+
+  '<p class="task">'+cur.task+'</p><div class="lab">'+cur.lab+'</div><div class="big">'+cur.big+'</div>'+
+  (cur.note?'<p class="note">'+cur.note+'</p>':"");
+}
+var IC={A:"🦹",J:"🕳️",Q:"🔄",K:"👑"};
+function cards(){
+ var h="";
+ ["A","J","Q","K"].forEach(function(k){
+  h+='<button class="fc'+(card===k?" on":"")+'" data-k="'+k+'"><i class="ic">'+IC[k]+'</i><big>'+k+'</big><small>'+FC[mode][k].n+'</small></button>';
+ });
+ $("cards").innerHTML=h;
+}
+function reset(){
+ cur=null;card=null;render();cards();
+ $("show").disabled=true;$("res").classList.add("hide");
+ $("npSeg").classList.toggle("hide",mode!=="coop");
+}
+function draw(){card=null;cur=build();render();cards();$("show").disabled=false;$("res").classList.add("hide")}
+function reveal(){
+ if(!cur)return;
+ var s=$("res");
+ s.innerHTML='<div class="ans">🎉 '+cur.ans+'</div><div class="pts">'+cur.rule+'</div><p style="margin:6px 0 0;color:var(--mute)">'+(mode==="solo"?"個人版先到 15 分獲勝":"全員合計 20 分，團隊勝利")+'</p>';
+ s.classList.remove("hide");
+}
+function sheet(k){
+ pend=k;var f=FC[mode][k];
+ $("sheet").innerHTML='<h2>'+k+'　'+f.n+'（'+(mode==="solo"?"個人版":"合作版")+'）</h2>'+
+  '<p><b>'+(mode==="solo"?"玩家要做的事":"團隊要做的事")+'</b><br>'+f.d+'</p>'+
+  '<p><b>'+FC[mode].who+'</b><br>'+f.w+'</p>'+
+  '<div class="row"><button class="no" id="cl">關閉</button><button class="yes" id="ap">'+(card===k?"取消套用":"選擇套用")+'</button></div>';
+ $("mask").classList.remove("hide");
+ $("cl").onclick=close;
+ $("ap").onclick=function(){
+  if(!cur){close();return}
+  card=(card===pend)?null:pend;
+  cur=build();render();cards();$("res").classList.add("hide");close();
+ };
+}
+function close(){$("mask").classList.add("hide")}
+document.querySelectorAll(".level").forEach(function(b){b.onclick=function(){
+ level=b.dataset.lv;$("s1").classList.add("hide");$("s2").classList.remove("hide");
+ $("lvtag").textContent=level==="easy"?"簡單・牌 2～5":"困難・牌 2～10";reset();}});
+$("back").onclick=function(){$("s2").classList.add("hide");$("s1").classList.remove("hide")};
+$("modeSeg").onclick=function(e){var b=e.target.closest("button");if(!b)return;mode=b.dataset.m;
+ [].forEach.call($("modeSeg").children,function(x){x.classList.toggle("on",x===b)});reset()};
+$("npSeg").onclick=function(e){var b=e.target.closest("button");if(!b)return;np=+b.dataset.n;
+ [].forEach.call($("npSeg").children,function(x){x.classList.toggle("on",x===b)});reset()};
+function P(n,c){return "<span class='pc "+(c||"")+"'>"+n+"</span>"}
+function L(t){return "<span class='lb'>"+t+"</span>"}
+function S(c,e,t,b){return "<section class='sec' style='--c:"+c+"'><h3><span class='em'>"+e+"</span>"+t+"</h3>"+b+"</section>"}
+function rulesHTML(){
+ var h="<div class='rtop'><div><h2><span class='bob'>💎</span> 數字大盜！</h2><small>尋寶規則，一頁看懂</small></div><button class='rx' id='rx' aria-label='關閉'>✕</button></div>";
+ h+=S("#3b9ae1","🎒","先準備",
+  "<div class='vr'>"+L("簡單")+P(2)+P(3)+P(4)+P(5)+"</div><div class='vr' style='margin-top:6px'>"+L("困難")+P(2)+P(5)+P("…")+P(10)+"</div><p>選好難度，每人抽 <b>3 張</b>當手牌。</p><div class='vr'>"+L("手牌")+P(3)+P(5)+P(4)+"</div><p>A、J、Q、K 是<b>功能牌</b>，不是數字牌。</p>");
+ h+=S("#f2a900","💎","抽寶藏卡",
+  "<div class='vr'><div class='ph'><div style='color:var(--mute)'>寶藏數字</div><div class='bg'>9</div></div></div><p>按手機的「抽寶藏卡」，看寶藏數字。有時會變成算式，例如 <b>3 × 3</b>，要先算出來喔！</p>");
+ h+=S("#8e5bd6","🃏","翻功能牌",
+  "<div class='vr t4'><div class='tile'><b>A</b><small>偷牌加倍</small></div><div class='tile'><b>J</b><small>大盜陷阱</small></div><div class='tile'><b>Q</b><small>調虎離山</small></div><div class='tile'><b>K</b><small>寶藏爭奪戰</small></div></div><p>功能牌決定這回合怎麼玩。點手機下方的功能牌可以看說明。個人版和合作版的功能牌不一樣！</p>");
+ h+=S("#2fae6a","➕","出牌比拚",
+  "<div class='vr'>"+P(3)+"<span class='op'>+</span>"+P(5)+"<span class='op'>=</span><span class='op'>8</span></div><div class='vr'><span class='op' style='color:var(--mute)'>寶藏 9，只差 1</span></div><p>出 <b>2 張牌相加</b>，最接近寶藏數字的人得 <b>1 分</b>。</p><p>🤝 合作版：全隊的牌相加，要<b>剛好等於</b>寶藏數字！</p>");
+ h+=S("#ff7a45","🔁","手牌剩 1 張，要再抽",
+  "<div class='vr'>"+P(2)+P(4)+P(5)+"</div><div class='op' style='text-align:center'>👇 出牌</div><div class='vr'>"+P(2,"d")+P(5,"d")+P(4)+"</div><div class='op' style='text-align:center'>👇 只剩 1 張，再抽</div><div class='vr'>"+P(4)+P("?","n")+P("?","n")+"</div><p>手牌只剩 1 張時，要再抽牌，補回 <b>3 張</b>。</p>");
+ h+=S("#e8506e","🏆","怎樣贏？",
+  "<div class='vr' style='align-items:stretch'><div class='vb'>🏴‍☠️ 個人版<b>15 分</b>先到的人贏</div><div class='vb'>🤝 合作版<b>20 分</b>全隊一起贏</div></div><p>答錯或失敗：不計分，下回合再戰，加油！💪</p>");
+ h+=S("#1aa7a7","🤫","合作版的暗號",
+  "<div class='vr' style='flex-direction:column;align-items:stretch'><div class='bub x'>❌　「我有 5！」</div><div class='bub v'>✅　「我這局出的數字很大！」</div></div><p>合作時<b>不能直接說數字</b>，只能說策略喔！</p>");
+ h+="<button class='main-btn draw' id='rgo'>我懂了，開始尋寶！</button>";
+ return h;
+}
+function closeRules(){$("rmask").classList.add("hide")}
+function openRules(){
+ $("rsheet").innerHTML=rulesHTML();$("rmask").classList.remove("hide");$("rmask").scrollTop=0;
+ $("rx").onclick=closeRules;$("rgo").onclick=closeRules;
+}
+document.querySelectorAll("[data-rule]").forEach(function(b){b.onclick=openRules});
+$("draw").onclick=draw;$("show").onclick=reveal;
+$("cards").onclick=function(e){var b=e.target.closest(".fc");if(b)sheet(b.dataset.k)};
+$("mask").onclick=function(e){if(e.target===$("mask"))close()};
+</script>
+</body>
+</html>
